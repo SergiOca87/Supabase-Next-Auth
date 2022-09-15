@@ -3,8 +3,10 @@ import { supabase } from '../utils/supabaseClient';
 
 export default function Auth() {
 	const [loading, setLoading] = useState(false);
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const [signUpEmail, setSignUpEmail] = useState('');
+	const [signUpPassword, setSignUpPassword] = useState('');
+	const [signInEmail, setSignInEmail] = useState('');
+	const [signInPassword, setSignInPassword] = useState('');
 
 	// Magic Link
 	// const handleLogin = async (email) => {
@@ -21,17 +23,43 @@ export default function Auth() {
 	// };
 
 	// Email and Password
-	const handleLogin = async (email, password) => {
+	const handleSignUp = async (email, password) => {
 		try {
 			setLoading(true);
-			//TODO:
-			const { data, error } = await supabase.auth.signInWithPassword({
-				email: 'example@email.com',
-				password: 'example-password',
+			const { user, session, error } = await supabase.auth.signUp({
+				email: signUpEmail,
+				password: signUpPassword,
 			});
+			if (error) throw error;
+			console.log(error);
 		} catch (error) {
+			alert(error.error_description || error.message);
 		} finally {
 			setLoading(false);
+			console.log('sign up ?');
+		}
+	};
+
+	const handleSignIn = async (email, password) => {
+		try {
+			setLoading(true);
+			const { user, session, error } =
+				await supabase.auth.signInWithPassword(
+					{
+						email: signInEmail,
+						password: signInPassword,
+					}
+					// {
+					// 	redirectTo: 'https://example.com/welcome',
+					// }
+				);
+			if (error) throw error;
+			console.log(error);
+		} catch (error) {
+			alert(error.error_description || error.message);
+		} finally {
+			setLoading(false);
+			console.log('sign in ?');
 		}
 	};
 
@@ -43,29 +71,72 @@ export default function Auth() {
 		<div className="row flex-center flex">
 			<div className="col-6 form-widget">
 				<h1 className="header">Supabase + Next.js</h1>
-				<p className="description">
-					Sign in via magic link with your email below
-				</p>
 				<div>
-					<input
-						className="inputField"
-						type="email"
-						placeholder="Your email"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-					/>
+					<p className="description">Sign Up</p>
+					<div>
+						<input
+							className="inputField"
+							type="email"
+							placeholder="Your email"
+							value={signUpEmail}
+							onChange={(e) => setSignUpEmail(e.target.value)}
+						/>
+					</div>
+					<div>
+						<input
+							className="inputField"
+							type="password"
+							placeholder="Set Password"
+							value={signUpPassword}
+							onChange={(e) => setSignUpPassword(e.target.value)}
+						/>
+					</div>
+					<div>
+						<button
+							onClick={(e) => {
+								e.preventDefault();
+								handleSignUp(signUpEmail, signUpPassword);
+							}}
+							className="button block"
+							disabled={loading}
+						>
+							<span>{loading ? 'Loading' : 'Sign Up'}</span>
+						</button>
+					</div>
 				</div>
+
 				<div>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							handleLogin(email);
-						}}
-						className="button block"
-						disabled={loading}
-					>
-						<span>{loading ? 'Loading' : 'Send magic link'}</span>
-					</button>
+					<p className="description">Sign In</p>
+					<div>
+						<input
+							className="inputField"
+							type="email"
+							placeholder="Your email"
+							value={signInEmail}
+							onChange={(e) => setSignInEmail(e.target.value)}
+						/>
+					</div>
+					<div>
+						<input
+							className="inputField"
+							type="password"
+							placeholder="Your Password"
+							value={signInPassword}
+							onChange={(e) => setSignInPassword(e.target.value)}
+						/>
+					</div>
+					<div>
+						<button
+							onClick={(e) => {
+								e.preventDefault();
+								handleSignIn(signInEmail, signInPassword);
+							}}
+							className="button block"
+							disabled={loading}
+						>
+							<span>{loading ? 'Loading' : 'Sign In'}</span>
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
