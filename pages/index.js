@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabaseClient';
-import Auth from '../components/Auth';
+import { Auth, ThemeSupa } from '@supabase/auth-ui-react';
 import Account from '../components/Account';
 
 export default function Home() {
@@ -43,7 +43,11 @@ export default function Home() {
 	return (
 		<div className="container" style={{ padding: '50px 0 100px 0' }}>
 			{!session ? (
-				<Auth />
+				<Auth
+					supabaseClient={supabase}
+					appearance={{ theme: ThemeSupa }}
+					theme="dark"
+				/>
 			) : (
 				<Account key={session.user.id} session={session} />
 			)}
