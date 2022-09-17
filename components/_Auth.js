@@ -22,6 +22,9 @@ export default function Auth() {
 	// 	}
 	// };
 
+	//TODO:
+	//Difference between session() and getUser()
+
 	// Email and Password
 	const handleSignUp = async (email, password) => {
 		try {
